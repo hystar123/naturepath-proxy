@@ -1066,7 +1066,7 @@ async function generateReport() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 4000,
         system: 'You are a precise professional HR assessment report generator. You respond ONLY with valid JSON matching the exact structure requested. No markdown, no backticks, no preamble, no explanation — raw JSON only.',
         messages: [{ role: 'user', content: prompt }]
