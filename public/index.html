@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NaturePath™ — Candidate Assessment</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brand: #1C3557;
+    --accent: #117A65;
+    --accent-lt: #D1F2EB;
+    --gold: #C9A84C;
+    --red: #C0392B;
+    --red-lt: #FADBD8;
+    --slate: #4A5568;
+    --light: #F7F8FA;
+    --border: #E2E8F0;
+    --white: #FFFFFF;
+    --dark: #1A202C;
+    --mid: #2D3748;
+    --orange: #B7500A;
+    --orange-lt: #FEF3E2;
+    --green: #1E8449;
+    --green-lt: #D5F5E3;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+    --radius: 10px;
+    --radius-lg: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  body { background: var(--light); color: var(--dark); min-height: 100vh; }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--brand);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo { color: #fff; font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+  .logo span { color: var(--gold); }
+  .tagline { color: rgba(255,255,255,0.5); font-size: 12px; }
+
+  /* ── LAYOUT ── */
+  .page { display: flex; min-height: calc(100vh - 56px); }
+  .sidebar {
+    width: 360px;
+    flex-shrink: 0;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+    padding: 28px 24px;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 56px);
+  }
+  .content { flex: 1; padding: 28px 32px; overflow-y: auto; }
+
+  /* ── FORM ── */
+  .form-title { font-size: 15px; font-weight: 600; color: var(--brand); margin-bottom: 20px; letter-spacing: 0.3px; text-transform: uppercase; }
+
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--slate);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .field input, .field select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--dark);
+    background: var(--white);
+    transition: border-color 0.15s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(17,122,101,0.1); }
+  .field .hint { font-size: 11px; color: var(--slate); margin-top: 4px; opacity: 0.7; }
+
+  /* Gender toggle */
+  .gender-toggle { display: flex; gap: 8px; }
+  .gender-toggle input[type="radio"] { display: none; }
+  .gender-toggle label {
+    flex: 1;
+    padding: 9px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .gender-toggle input:checked + label {
+    background: var(--accent-lt);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Time note */
+  .time-note {
+    background: var(--orange-lt);
+    border: 1px solid #F5CBA7;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--orange);
+    margin-top: 6px;
+  }
+
+  /* Submit */
+  .btn-generate {
+    width: 100%;
+    padding: 14px;
+    background: var(--brand);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.15s, transform 0.1s;
+    letter-spacing: 0.2px;
+  }
+  .btn-generate:hover:not(:disabled) { background: #152847; }
+  .btn-generate:active:not(:disabled) { transform: scale(0.99); }
+  .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* History */
+  .history-section { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .history-title { font-size: 11px; font-weight: 600; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+  .history-item {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .history-item:hover { border-color: var(--accent); background: var(--accent-lt); }
+  .history-item .hi-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+  .history-item .hi-role { font-size: 12px; color: var(--slate); }
+  .history-item .hi-date { font-size: 11px; color: var(--slate); opacity: 0.6; }
+
+  /* ── CONTENT AREA ── */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: var(--slate);
+    gap: 12px;
+    padding: 60px 20px;
+  }
+  .empty-icon { font-size: 48px; opacity: 0.3; }
+  .empty-state h2 { font-size: 20px; font-weight: 600; color: var(--mid); }
+  .empty-state p { font-size: 14px; max-width: 360px; line-height: 1.6; opacity: 0.7; }
+
+  /* Loading */
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 16px;
+    color: var(--slate);
+  }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-label { font-size: 14px; font-weight: 500; }
+  .loading-sub { font-size: 12px; opacity: 0.6; }
+
+  /* Error */
+  .error-box {
+    background: var(--red-lt);
+    border: 1px solid #F1948A;
+    border-radius: 10px;
+    padding: 16px 20px;
+    color: var(--red);
+    font-size: 14px;
+    margin: 20px 0;
+  }
+
+  /* ── REPORT OUTPUT ── */
+  .report-wrap { max-width: 860px; }
+
+  .report-header {
+    background: var(--brand);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .report-header .rh-name { font-size: 28px; font-weight: 700; color: #fff; }
+  .report-header .rh-role { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  .report-header .rh-archetype { font-size: 14px; color: var(--gold); font-weight: 600; margin-top: 6px; }
+
+  .rh-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pill {
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 80px;
+  }
+  .pill .pv { font-size: 18px; font-weight: 700; }
+  .pill .pl { font-size: 11px; opacity: 0.85; }
+  .pill-accent { background: var(--accent); color: #fff; }
+  .pill-gold { background: rgba(201,168,76,0.2); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+  .pill-green { background: rgba(30,132,73,0.15); color: #1a6b3c; border: 1px solid rgba(30,132,73,0.3); }
+
+  /* Accent bar */
+  .accent-bar { height: 4px; background: var(--accent); border-radius: 0 0 4px 4px; margin-bottom: 20px; }
+
+  /* Note banner */
+  .note-banner {
+    background: var(--orange-lt);
+    border: 1px solid #F5CBA7;
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--orange);
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  /* Sections */
+  .section {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .section h2 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--brand);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent-lt);
+  }
+
+  /* Grid sections */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .section.compact { padding: 20px 24px; }
+
+  /* Trait bar */
+  .trait-bar { margin-bottom: 10px; }
+  .tb-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--slate); margin-bottom: 4px; }
+  .tb-track { height: 6px; background: var(--light); border-radius: 3px; overflow: hidden; }
+  .tb-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.6s ease; }
+
+  /* Motivation table */
+  .motive-row {
+    display: grid;
+    grid-template-columns: 28px 180px 1fr;
+    align-items: start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .motive-row:last-child { border-bottom: none; }
+  .motive-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .m1 { background: var(--accent-lt); color: var(--accent); }
+  .m2 { background: #D6EAF8; color: #1A5276; }
+  .m3 { background: var(--green-lt); color: var(--green); }
+  .m4 { background: #EAECEE; color: var(--slate); }
+  .m5 { background: #EAECEE; color: var(--slate); }
+  .motive-label { font-size: 13px; font-weight: 600; color: var(--dark); padding-top: 4px; }
+  .motive-desc { font-size: 12px; color: var(--slate); line-height: 1.55; padding-top: 4px; }
+
+  /* Score table */
+  .score-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .score-row:last-child { border-bottom: none; }
+  .score-row.total {
+    background: var(--brand);
+    margin: 8px -28px -24px;
+    padding: 14px 28px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    border-bottom: none;
+    color: #fff;
+    font-weight: 600;
+  }
+  .score-badge {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .score-high { color: var(--green); }
+  .score-mid { color: var(--accent); }
+  .score-low { color: var(--orange); }
+  .score-basis { font-size: 12px; color: var(--slate); line-height: 1.4; }
+
+  /* Stress/resilience grid */
+  .sr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .sr-box { border-radius: var(--radius); padding: 14px 16px; }
+  .sr-box.triggers { background: var(--red-lt); }
+  .sr-box.conditions { background: var(--green-lt); }
+  .sr-box h3 { font-size: 12px; font-weight: 700; margin-bottom: 10px; }
+  .sr-box.triggers h3 { color: var(--red); }
+  .sr-box.conditions h3 { color: var(--green); }
+  .sr-item { font-size: 12px; color: var(--dark); padding: 3px 0 3px 12px; position: relative; line-height: 1.4; }
+  .sr-item::before { content: '–'; position: absolute; left: 0; color: var(--slate); }
+
+  /* Culture fit */
+  .fit-row {
+    display: grid;
+    grid-template-columns: 1fr 120px 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .fit-row:last-child { border-bottom: none; }
+  .fit-badge { text-align: center; font-weight: 700; font-size: 11px; padding: 3px 8px; border-radius: 20px; }
+  .fit-excellent { background: var(--green-lt); color: var(--green); }
+  .fit-strong { background: var(--accent-lt); color: var(--accent); }
+  .fit-moderate { background: #FEF3E2; color: #7D4B0A; }
+  .fit-weak { background: var(--orange-lt); color: var(--orange); }
+  .fit-poor { background: var(--red-lt); color: var(--red); }
+
+  /* Career phase */
+  .phase-row {
+    display: grid;
+    grid-template-columns: 160px 90px 100px 1fr;
+    gap: 10px;
+    align-items: start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .phase-row:last-child { border-bottom: none; }
+  .phase-row.active { background: var(--accent-lt); margin: 0 -28px; padding: 12px 28px; border-radius: 8px; border-bottom: none; }
+  .phase-name { font-weight: 600; color: var(--dark); }
+  .phase-name.current { color: var(--accent); }
+  .phase-period { color: var(--slate); }
+  .phase-sig { color: var(--slate); line-height: 1.45; }
+
+  /* Manager cards */
+  .mgr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .mgr-card { border-radius: var(--radius); padding: 14px 16px; }
+  .mgr-card:nth-child(odd) { background: var(--brand); color: #fff; }
+  .mgr-card:nth-child(even) { background: var(--light); }
+  .mgr-card h3 { font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+  .mgr-card:nth-child(odd) h3 { color: var(--gold); }
+  .mgr-card:nth-child(even) h3 { color: var(--brand); }
+  .mgr-card p { font-size: 12px; line-height: 1.55; }
+  .mgr-card:nth-child(odd) p { color: rgba(255,255,255,0.8); }
+  .mgr-card:nth-child(even) p { color: var(--slate); }
+
+  /* Final rec */
+  .rec-box {
+    background: linear-gradient(135deg, var(--brand) 0%, #234875 100%);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+    align-items: start;
+    color: #fff;
+  }
+  .rec-verdict { text-align: center; }
+  .rec-verdict .rv-check { font-size: 32px; margin-bottom: 8px; }
+  .rec-verdict .rv-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.6; margin-bottom: 4px; }
+  .rec-verdict .rv-result { font-size: 22px; font-weight: 700; color: var(--gold); }
+  .rec-verdict .rv-score { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+  .rec-summary h3 { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .rec-summary p { font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 10px; }
+  .rec-conditions { font-size: 12px; color: rgba(255,255,255,0.6); }
+  .rec-conditions span { color: var(--gold); font-weight: 600; }
+
+  /* Print/export bar */
+  .action-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .btn-action {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-action:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-action.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-action.primary:hover { background: #0e6655; }
+
+  /* Methodology note */
+  .methodology {
+    background: var(--light);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 11px;
+    color: var(--slate);
+    margin-top: 20px;
+    line-height: 1.55;
+    border: 1px solid var(--border);
+  }
+
+  @media print {
+    .sidebar, .action-bar, .header { display: none !important; }
+    .content { padding: 0; }
+    body { background: white; }
+    .section { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div>
+    <div class="logo">Nature<span>Path</span>™</div>
+    <div class="tagline">Chronobiological Talent Intelligence</div>
+  </div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.35);">Strictly Confidential — HR Use Only</div>
+</header>
+
+<div class="page">
+
+  <!-- ── SIDEBAR FORM ── -->
+  <aside class="sidebar">
+    <div class="form-title">New Assessment</div>
+
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="f-name" placeholder="Candidate's full name" autocomplete="off">
+    </div>
+
+    <div class="field">
+      <label>Date of Birth</label>
+      <input type="date" id="f-dob" max="2010-01-01">
+    </div>
+
+    <div class="field">
+      <label>Time of Birth</label>
+      <input type="time" id="f-time" placeholder="HH:MM (optional)">
+      <div class="hint">Leave blank if unknown — reduces accuracy to ~75%</div>
+    </div>
+
+    <div class="field">
+      <label>Gender</label>
+      <div class="gender-toggle">
+        <input type="radio" name="gender" id="g-m" value="Male">
+        <label for="g-m">Male</label>
+        <input type="radio" name="gender" id="g-f" value="Female">
+        <label for="g-f">Female</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Role Being Assessed For</label>
+      <input type="text" id="f-role" placeholder="e.g. Head of Operations" autocomplete="off">
+    </div>
+
+    <button class="btn-generate" id="btn-gen" onclick="generateReport()">
+      Generate Assessment
+    </button>
+
+    <!-- History -->
+    <div class="history-section" id="history-section" style="display:none">
+      <div class="history-title">Recent Assessments</div>
+      <div id="history-list"></div>
+    </div>
+  </aside>
+
+  <!-- ── CONTENT AREA ── -->
+  <main class="content" id="content-area">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">◎</div>
+      <h2>No assessment generated yet</h2>
+      <p>Complete the form on the left with the candidate's details and click Generate Assessment to produce a full chronobiological talent profile.</p>
+    </div>
+  </main>
+</div>
+
+<script>
+// ─── BAZI CALCULATION ENGINE ───────────────────────────────────────────────
+const STEMS = ["Jia","Yi","Bing","Ding","Wu","Ji","Geng","Xin","Ren","Gui"];
+const STEM_EL = {Jia:"Yang Wood",Yi:"Yin Wood",Bing:"Yang Fire",Ding:"Yin Fire",Wu:"Yang Earth",Ji:"Yin Earth",Geng:"Yang Metal",Xin:"Yin Metal",Ren:"Yang Water",Gui:"Yin Water"};
+const BRANCHES = ["Zi","Chou","Yin","Mao","Chen","Si","Wu","Wei","Shen","You","Xu","Hai"];
+const BRANCH_EL = {Zi:"Water",Chou:"Earth",Yin:"Wood",Mao:"Wood",Chen:"Earth",Si:"Fire",Wu:"Fire",Wei:"Earth",Shen:"Metal",You:"Metal",Xu:"Earth",Hai:"Water"};
+const HIDDEN = {Zi:["Gui"],Chou:["Ji","Gui","Xin"],Yin:["Jia","Bing","Wu"],Mao:["Yi"],Chen:["Wu","Yi","Gui"],Si:["Bing","Geng","Wu"],Wu:["Ding","Ji"],Wei:["Ji","Ding","Yi"],Shen:["Geng","Ren","Wu"],You:["Xin"],Xu:["Wu","Xin","Ding"],Hai:["Ren","Jia"]};
+
+// Solar term month boundaries (approximate day of month for each month's solar term start)
+const SOLAR_TERM_DAYS = [6,4,6,5,6,6,7,7,8,8,7,7]; // Jan-Dec
+
+function getBaziMonth(year, month, day) {
+  const termDay = SOLAR_TERM_DAYS[month - 1];
+  const solarMonth = day >= termDay ? month : month - 1;
+  const adjustedMonth = ((solarMonth - 1) + 12) % 12; // 0-11, Jan=0
+
+  // Month branch: Yin=Feb, Mao=Mar... (offset by 2 from Jan)
+  const monthBranchIdx = (adjustedMonth + 2) % 12;
+
+  // Month stem: based on year stem
+  const yearStemIdx = (year - 4) % 10;
+  const monthStemStart = [0, 2, 4, 6, 8][yearStemIdx % 5]; // Jia/Ji=0, Yi/Geng=2, Bing/Xin=4, Ding/Ren=6, Wu/Gui=8
+  const monthStemIdx = (monthStemStart + monthBranchIdx - 2 + 12) % 10; // offset: Yin is month 0
+
+  return { stem: STEMS[monthStemIdx], branch: BRANCHES[monthBranchIdx] };
+}
+
+function calcDayPillar(year, month, day) {
+  const ref = new Date(1900, 0, 1);
+  const birth = new Date(year, month - 1, day);
+  const diff = Math.round((birth - ref) / 86400000);
+  return { stem: STEMS[diff % 10], branch: BRANCHES[(diff + 10) % 12] };
+}
+
+function calcHourPillar(dayStemIdx, hour) {
+  const hourBranch = Math.floor(((hour + 1) % 24) / 2);
+  const hourStemStarts = [0, 2, 4, 6, 8];
+  const start = hourStemStarts[dayStemIdx % 5];
+  const stemIdx = (start + hourBranch) % 10;
+  return { stem: STEMS[stemIdx], branch: BRANCHES[hourBranch] };
+}
+
+function computeChart(dobStr, timeStr, gender) {
+  const [yr, mo, dy] = dobStr.split('-').map(Number);
+  const yearStemIdx = (yr - 4) % 10;
+  const yearBranchIdx = (yr - 4) % 12;
+  const yearPillar = { stem: STEMS[yearStemIdx], branch: BRANCHES[yearBranchIdx] };
+  const monthPillar = getBaziMonth(yr, mo, dy);
+  const dayPillar = calcDayPillar(yr, mo, dy);
+
+  let hourPillar = null;
+  if (timeStr) {
+    const [h] = timeStr.split(':').map(Number);
+    const dayStemIdx = STEMS.indexOf(dayPillar.stem);
+    hourPillar = calcHourPillar(dayStemIdx, h);
+  }
+
+  // Element count
+  const elCount = {Wood:0,Fire:0,Earth:0,Metal:0,Water:0};
+  const pillars = [yearPillar, monthPillar, dayPillar];
+  if (hourPillar) pillars.push(hourPillar);
+  pillars.forEach(p => {
+    elCount[STEM_EL[p.stem].split(' ')[1]]++;
+    elCount[BRANCH_EL[p.branch]]++;
+  });
+
+  // Luck pillars: Yang year + Male OR Yin year + Female = forward; else reverse
+  const yearIsYang = yearStemIdx % 2 === 0;
+  const forward = (yearIsYang && gender === 'Male') || (!yearIsYang && gender === 'Female');
+
+  return {
+    year: yearPillar, month: monthPillar, day: dayPillar, hour: hourPillar,
+    dayMaster: dayPillar.stem,
+    dayMasterEl: STEM_EL[dayPillar.stem],
+    elCount,
+    forward,
+    birthYear: yr,
+    hasTime: !!timeStr
+  };
+}
+
+function chartSummary(chart) {
+  const dm = chart.dayMaster;
+  const dmel = chart.dayMasterEl;
+  const hidden = [chart.year, chart.month, chart.day, chart.hour].filter(Boolean)
+    .map(p => HIDDEN[p.branch] || []).flat();
+  const allStems = [chart.year, chart.month, chart.day, chart.hour].filter(Boolean).map(p => p.stem).concat(hidden);
+  return {
+    dayMaster: dm,
+    dayMasterElement: dmel,
+    yearPillar: `${chart.year.stem} ${chart.year.branch} (${STEM_EL[chart.year.stem]} / ${BRANCH_EL[chart.year.branch]})`,
+    monthPillar: `${chart.month.stem} ${chart.month.branch} (${STEM_EL[chart.month.stem]} / ${BRANCH_EL[chart.month.branch]})`,
+    dayPillar: `${chart.day.stem} ${chart.day.branch} (${STEM_EL[chart.day.stem]} / ${BRANCH_EL[chart.day.branch]})`,
+    hourPillar: chart.hour ? `${chart.hour.stem} ${chart.hour.branch} (${STEM_EL[chart.hour.stem]} / ${BRANCH_EL[chart.hour.branch]})` : 'Unknown',
+    elementDistribution: chart.elCount,
+    dominantElements: Object.entries(chart.elCount).sort((a,b) => b[1]-a[1]).slice(0,2).map(e => e[0]).join(' & '),
+    luckDirection: chart.forward ? 'forward' : 'reverse',
+    currentAge: new Date().getFullYear() - chart.birthYear,
+    hasHourPillar: chart.hasTime
+  };
+}
+
+// ─── PROMPT BUILDER ─────────────────────────────────────────────────────────
+function buildPrompt(name, dob, gender, role, chart) {
+  const cs = chartSummary(chart);
+  const age = cs.currentAge;
+
+  return `You are NaturePath™, a professional chronobiological talent assessment platform. Generate a structured Candidate Insight Report based on the following data.
+
+CANDIDATE DATA:
+- Name: ${name}
+- Date of Birth: ${dob}
+- Gender: ${gender}
+- Current Age: ${age}
+- Role Being Assessed: ${role}
+- Birth time provided: ${chart.hasTime ? 'Yes (full 4-pillar accuracy)' : 'No (75% accuracy — 3 pillars only)'}
+
+CHRONOBIOLOGICAL CHART (pre-computed — use these values exactly):
+- Day Master: ${cs.dayMaster} (${cs.dayMasterElement}) — this is the core personality archetype
+- Year Pillar: ${cs.yearPillar}
+- Month Pillar: ${cs.monthPillar}
+- Day Pillar: ${cs.dayPillar}
+- Hour Pillar: ${cs.hourPillar}
+- Element distribution: ${JSON.stringify(cs.elementDistribution)}
+- Dominant elements: ${cs.dominantElements}
+- Luck pillar direction: ${cs.luckDirection}
+
+IMPORTANT RULES:
+1. NEVER use the words: BaZi, Four Pillars, Heavenly Stem, Earthly Branch, Eating God, Hurting Officer, Direct Officer, 7 Killings, Rob Wealth, pillar, luck pillar, Chinese astrology, metaphysics, or any other metaphysical terminology.
+2. Frame all insights in plain professional language suitable for an HR audience.
+3. Use "chronobiological profile", "disposition profile", "temporal profiling", "natural disposition", "character archetype" instead.
+4. Derive all insights from the chart data above — be specific and accurate to the Day Master archetype.
+5. Keep each section concise. Total response should be comprehensive but not padded.
+
+Generate the report in the following EXACT JSON structure. Return ONLY valid JSON, no markdown, no preamble:
+
+{
+  "candidate": {
+    "name": "${name}",
+    "dob": "${dob}",
+    "gender": "${gender}",
+    "role": "${role}",
+    "archetype": "[2-4 word archetype name matching Day Master personality, e.g. The Strategic Illuminator]",
+    "archetypeTagline": "[10-15 word tagline capturing the core disposition]",
+    "roleScore": [number 60-95],
+    "careerPhase": "[PEAK|ACTIVE|BUILDING|CONSOLIDATING]",
+    "recommendation": "[HIGHLY RECOMMENDED|RECOMMENDED|CONDITIONALLY RECOMMENDED|NOT RECOMMENDED]",
+    "hasTimeCaveat": ${!chart.hasTime}
+  },
+  "character": {
+    "summary": "[2-3 sentence character summary in plain English]",
+    "traits": [
+      {"label": "string", "description": "string"},
+      {"label": "string", "description": "string"},
+      {"label": "string", "description": "string"},
+      {"label": "string", "description": "string"},
+      {"label": "string", "description": "string"},
+      {"label": "string", "description": "string"}
+    ],
+    "watchPoints": [
+      {"label": "string", "description": "string"},
+      {"label": "string", "description": "string"}
+    ]
+  },
+  "personality": {
+    "summary": "[1-2 sentence personality summary]",
+    "dimensions": [
+      {"left": "Introvert", "right": "Extrovert", "score": [1-10]},
+      {"left": "Detail-first", "right": "Idea-first", "score": [1-10]},
+      {"left": "Rule-driven", "right": "Values-driven", "score": [1-10]},
+      {"left": "Cautious", "right": "Risk-tolerant", "score": [1-10]},
+      {"left": "Task-focused", "right": "People-focused", "score": [1-10]},
+      {"left": "Reserved", "right": "Assertive", "score": [1-10]},
+      {"left": "Reactive", "right": "Proactive", "score": [1-10]},
+      {"left": "Solo", "right": "Team-oriented", "score": [1-10]}
+    ]
+  },
+  "workStyle": {
+    "rows": [
+      {"dimension": "Thinking style", "orientation": "string"},
+      {"dimension": "Decision approach", "orientation": "string"},
+      {"dimension": "Complexity tolerance", "orientation": "string"},
+      {"dimension": "Autonomy need", "orientation": "string"},
+      {"dimension": "Learning preference", "orientation": "string"},
+      {"dimension": "Communication style", "orientation": "string"},
+      {"dimension": "Preferred output", "orientation": "string"},
+      {"dimension": "Conflict approach", "orientation": "string"}
+    ]
+  },
+  "motivation": {
+    "intro": "[1 sentence]",
+    "drivers": [
+      {"rank": 1, "driver": "string", "implication": "string"},
+      {"rank": 2, "driver": "string", "implication": "string"},
+      {"rank": 3, "driver": "string", "implication": "string"},
+      {"rank": 4, "driver": "string", "implication": "string"},
+      {"rank": 5, "driver": "string", "implication": "string"}
+    ]
+  },
+  "leadership": {
+    "archetype": "[Title]",
+    "description": "[2-3 sentences]",
+    "strengths": ["string","string","string","string","string"],
+    "watchPoints": ["string","string","string"],
+    "teamRole": ["string","string","string","string"],
+    "complement": ["string","string","string","string"]
+  },
+  "stressResilience": {
+    "triggers": ["string","string","string","string","string","string"],
+    "conditions": ["string","string","string","string","string","string"],
+    "burnoutNote": "[1-2 sentences on burnout risk level and profile]"
+  },
+  "cultureFit": [
+    {"culture": "string", "fit": "Excellent|Strong|Moderate|Weak|Poor", "reason": "string"},
+    {"culture": "string", "fit": "Excellent|Strong|Moderate|Weak|Poor", "reason": "string"},
+    {"culture": "string", "fit": "Excellent|Strong|Moderate|Weak|Poor", "reason": "string"},
+    {"culture": "string", "fit": "Excellent|Strong|Moderate|Weak|Poor", "reason": "string"},
+    {"culture": "string", "fit": "Excellent|Strong|Moderate|Weak|Poor", "reason": "string"},
+    {"culture": "string", "fit": "Excellent|Strong|Moderate|Weak|Poor", "reason": "string"},
+    {"culture": "string", "fit": "Excellent|Strong|Moderate|Weak|Poor", "reason": "string"}
+  ],
+  "roleScore": {
+    "competencies": [
+      {"name": "string", "score": [6-10], "basis": "string"},
+      {"name": "string", "score": [6-10], "basis": "string"},
+      {"name": "string", "score": [6-10], "basis": "string"},
+      {"name": "string", "score": [6-10], "basis": "string"},
+      {"name": "string", "score": [6-10], "basis": "string"},
+      {"name": "string", "score": [6-10], "basis": "string"},
+      {"name": "string", "score": [6-10], "basis": "string"},
+      {"name": "string", "score": [6-10], "basis": "string"}
+    ],
+    "overall": [60-95],
+    "verdict": "[STRONG FIT|EXCELLENT FIT|MODERATE FIT|WEAK FIT]",
+    "verdictNote": "[1-2 sentences]"
+  },
+  "careerPhase": {
+    "intro": "[1 sentence]",
+    "phases": [
+      {"name": "Foundation Phase", "ageRange": "string", "period": "string", "description": "string", "active": false},
+      {"name": "string", "ageRange": "string", "period": "string", "description": "string", "active": true},
+      {"name": "string", "ageRange": "string", "period": "string", "description": "string", "active": false},
+      {"name": "string", "ageRange": "string", "period": "string", "description": "string", "active": false}
+    ],
+    "hiringInsight": "[1-2 sentences on timing]"
+  },
+  "managerGuide": {
+    "intro": "[1 sentence]",
+    "actions": [
+      {"title": "string", "description": "string"},
+      {"title": "string", "description": "string"},
+      {"title": "string", "description": "string"},
+      {"title": "string", "description": "string"},
+      {"title": "string", "description": "string"},
+      {"title": "string", "description": "string"}
+    ]
+  },
+  "recommendation": {
+    "summary": "[2-3 sentences overall summary]",
+    "timing": "[1-2 sentences on career timing]",
+    "conditions": "[comma-separated list of key success conditions]"
+  }
+}`;
+}
+
+// ─── RENDER REPORT ───────────────────────────────────────────────────────────
+function fitClass(score) {
+  if (score >= 8.5) return 'score-high';
+  if (score >= 7) return 'score-mid';
+  return 'score-low';
+}
+function fitBadgeClass(fit) {
+  return {Excellent:'fit-excellent',Strong:'fit-strong',Moderate:'fit-moderate',Weak:'fit-weak',Poor:'fit-poor'}[fit] || 'fit-moderate';
+}
+function motivNumClass(rank) { return `m${Math.min(rank,5)}`; }
+
+function renderReport(data, candidateLabel) {
+  const r = data;
+  const c = r.candidate;
+  const recColor = c.recommendation.includes('HIGHLY') ? 'pill-green' : 'pill-gold';
+
+  return `
+<div class="report-wrap" id="report-output">
+  <div class="action-bar no-print">
+    <button class="btn-action" onclick="window.print()">⎙ Print / Save PDF</button>
+  </div>
+
+  <div class="report-header">
+    <div>
+      <div class="rh-name">${c.name}</div>
+      <div class="rh-role">${c.role}</div>
+      <div class="rh-archetype">${c.archetype}</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:4px;font-style:italic">"${c.archetypeTagline}"</div>
+    </div>
+    <div class="rh-pills">
+      <div class="pill pill-accent"><div class="pv">${c.roleScore}/100</div><div class="pl">Role Fit</div></div>
+      <div class="pill pill-gold"><div class="pv">${c.careerPhase}</div><div class="pl">Career Phase</div></div>
+      <div class="pill pill-green"><div class="pv" style="font-size:13px">${c.recommendation.split(' ')[0]}</div><div class="pl">${c.recommendation.split(' ').slice(1).join(' ')}</div></div>
+    </div>
+  </div>
+  <div class="accent-bar"></div>
+
+  ${c.hasTimeCaveat ? '<div class="note-banner" style="display:block">⚠ Birth time was not provided. Profile accuracy is approximately 75%. Providing birth time enables a complete four-pillar assessment.</div>' : ''}
+
+  <!-- CHARACTER -->
+  <div class="section">
+    <h2>01 · Character & Personality</h2>
+    <div class="two-col">
+      <div style="background:var(--brand);border-radius:var(--radius);padding:16px 18px">
+        <div style="font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">${c.archetype}</div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6">${r.character.summary}</p>
+      </div>
+      <div>
+        ${r.character.traits.map(t => `<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--green);font-weight:600">✓</span> <strong>${t.label}</strong><span style="color:var(--slate)"> — ${t.description}</span></div>`).join('')}
+        ${r.character.watchPoints.map(w => `<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--orange);font-weight:600">⚠</span> <strong>${w.label}</strong><span style="color:var(--slate)"> — ${w.description}</span></div>`).join('')}
+      </div>
+    </div>
+
+    <div style="margin-top:20px">
+      <div style="font-size:12px;font-weight:600;color:var(--slate);margin-bottom:12px">Personality Spectrum</div>
+      <div style="font-size:11px;color:var(--slate);margin-bottom:12px;font-style:italic">${r.personality.summary}</div>
+      <div class="two-col">
+        <div>${r.personality.dimensions.slice(0,4).map(d => `
+          <div class="trait-bar">
+            <div class="tb-labels"><span>${d.left}</span><span>${d.right}</span></div>
+            <div class="tb-track"><div class="tb-fill" style="width:${d.score*10}%"></div></div>
+          </div>`).join('')}</div>
+        <div>${r.personality.dimensions.slice(4).map(d => `
+          <div class="trait-bar">
+            <div class="tb-labels"><span>${d.left}</span><span>${d.right}</span></div>
+            <div class="tb-track"><div class="tb-fill" style="width:${d.score*10}%"></div></div>
+          </div>`).join('')}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORK STYLE -->
+  <div class="section">
+    <h2>02 · Cognitive Style & Work Preferences</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      ${r.workStyle.rows.map((row,i) => `
+      <tr style="background:${i%2===0?'var(--light)':'var(--white)'}">
+        <td style="padding:8px 12px;font-weight:600;color:var(--dark);width:200px;border-radius:4px 0 0 4px">${row.dimension}</td>
+        <td style="padding:8px 12px;color:var(--slate)">${row.orientation}</td>
+      </tr>`).join('')}
+    </table>
+  </div>
+
+  <!-- MOTIVATION -->
+  <div class="section">
+    <h2>03 · Motivation & Performance Drivers</h2>
+    <div style="font-size:13px;color:var(--slate);margin-bottom:16px;font-style:italic">${r.motivation.intro}</div>
+    ${r.motivation.drivers.map(d => `
+    <div class="motive-row">
+      <div class="motive-num ${motivNumClass(d.rank)}">${d.rank}</div>
+      <div class="motive-label">${d.driver}</div>
+      <div class="motive-desc">${d.implication}</div>
+    </div>`).join('')}
+  </div>
+
+  <!-- LEADERSHIP & TEAM -->
+  <div class="section">
+    <h2>04 · Leadership Profile & Team Dynamics</h2>
+    <div class="two-col">
+      <div style="background:var(--brand);border-radius:var(--radius);padding:16px 18px">
+        <div style="font-size:11px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Leadership style</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:10px">${r.leadership.archetype}</div>
+        <p style="font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6">${r.leadership.description}</p>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--brand);margin-bottom:8px">Strengths</div>
+        ${r.leadership.strengths.map(s => `<div style="font-size:12px;padding:3px 0;color:var(--dark)"><span style="color:var(--green)">✓</span>  ${s}</div>`).join('')}
+        <div style="font-size:12px;font-weight:700;color:var(--orange);margin:10px 0 8px">Watch points</div>
+        ${r.leadership.watchPoints.map(w => `<div style="font-size:12px;padding:3px 0;color:var(--orange)">⚠  ${w}</div>`).join('')}
+      </div>
+    </div>
+    <div class="two-col" style="margin-top:14px">
+      <div style="background:var(--green-lt);border-radius:var(--radius);padding:12px 14px">
+        <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px">Best team role</div>
+        ${r.leadership.teamRole.map(t => `<div class="sr-item">${t}</div>`).join('')}
+      </div>
+      <div style="background:var(--orange-lt);border-radius:var(--radius);padding:12px 14px">
+        <div style="font-size:11px;font-weight:700;color:var(--orange);margin-bottom:8px">Complement with</div>
+        ${r.leadership.complement.map(t => `<div class="sr-item">${t}</div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <!-- STRESS & RESILIENCE -->
+  <div class="section">
+    <h2>05 · Stress Response, Resilience & Culture Fit</h2>
+    <div class="sr-grid">
+      <div class="sr-box triggers">
+        <h3>⚠ Stress & disengagement triggers</h3>
+        ${r.stressResilience.triggers.map(t => `<div class="sr-item">${t}</div>`).join('')}
+      </div>
+      <div class="sr-box conditions">
+        <h3>✅ Resilience & high-performance conditions</h3>
+        ${r.stressResilience.conditions.map(t => `<div class="sr-item">${t}</div>`).join('')}
+      </div>
+    </div>
+    <div style="background:var(--accent-lt);border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px;color:var(--accent);font-style:italic">${r.stressResilience.burnoutNote}</div>
+
+    <div style="margin-top:20px">
+      <div style="font-size:12px;font-weight:700;color:var(--slate);margin-bottom:10px">Culture fit matrix</div>
+      <div>
+        ${r.cultureFit.map(cf => `
+        <div class="fit-row">
+          <div style="color:var(--dark)">${cf.culture}</div>
+          <div><span class="fit-badge ${fitBadgeClass(cf.fit)}">${cf.fit}</span></div>
+          <div style="color:var(--slate)">${cf.reason}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <!-- ROLE SCORE -->
+  <div class="section">
+    <h2>06 · Role Fit Assessment — ${c.role}</h2>
+    <div>
+      ${r.roleScore.competencies.map((comp,i) => `
+      <div class="score-row">
+        <div style="color:var(--dark)">${comp.name}</div>
+        <div class="score-badge ${fitClass(comp.score)}">${comp.score}/10</div>
+        <div class="score-basis">${comp.basis}</div>
+      </div>`).join('')}
+      <div class="score-row total">
+        <div>Overall Role Fit Score</div>
+        <div style="text-align:center;color:var(--gold);font-size:20px">${r.roleScore.overall}/100</div>
+        <div style="color:rgba(255,255,255,0.8)">${r.roleScore.verdict} — ${r.roleScore.verdictNote}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAREER PHASE -->
+  <div class="section">
+    <h2>07 · Career Phase & Timing Outlook</h2>
+    <div style="font-size:12px;color:var(--slate);margin-bottom:14px;font-style:italic">${r.careerPhase.intro}</div>
+    ${r.careerPhase.phases.map(p => `
+    <div class="phase-row ${p.active ? 'active' : ''}">
+      <div class="phase-name ${p.active ? 'current' : ''}">${p.active ? '★ ' : ''}${p.name}</div>
+      <div class="phase-period">${p.ageRange}</div>
+      <div class="phase-period">${p.period}</div>
+      <div class="phase-sig">${p.description}</div>
+    </div>`).join('')}
+    <div style="background:var(--accent-lt);border-radius:8px;padding:10px 14px;margin-top:14px;font-size:12px;color:var(--accent);font-style:italic">${r.careerPhase.hiringInsight}</div>
+  </div>
+
+  <!-- MANAGER GUIDE -->
+  <div class="section">
+    <h2>08 · Manager's Guide & Final Recommendation</h2>
+    <div style="font-size:12px;color:var(--slate);margin-bottom:14px;font-style:italic">${r.managerGuide.intro}</div>
+    <div class="mgr-grid">
+      ${r.managerGuide.actions.map((a,i) => `
+      <div class="mgr-card">
+        <h3>${i+1}.  ${a.title}</h3>
+        <p>${a.description}</p>
+      </div>`).join('')}
+    </div>
+
+    <div class="rec-box" style="margin-top:20px">
+      <div class="rec-verdict">
+        <div class="rv-check">✅</div>
+        <div class="rv-label">Recommendation</div>
+        <div class="rv-result">${c.recommendation}</div>
+        <div class="rv-score">Role Fit: ${c.roleScore}/100</div>
+      </div>
+      <div class="rec-summary">
+        <h3>Summary Assessment</h3>
+        <p>${r.recommendation.summary}</p>
+        <p>${r.recommendation.timing}</p>
+        <div class="rec-conditions"><span>Key conditions:</span>  ${r.recommendation.conditions}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="methodology">
+    <strong>Assessment methodology:</strong> NaturePath™ uses a proprietary chronobiological profiling methodology — analysing the precise temporal conditions of a person's birth to derive a natural disposition profile. Rooted in the scientific principle of chronobiology, this approach produces a character map free of self-reporting bias. This report is intended to complement — not replace — conventional methods including interviews, competency evaluations, and reference checks. All insights reflect natural tendencies, not deterministic outcomes. Assessment date: ${new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'})}.
+  </div>
+</div>`;
+}
+
+// ─── HISTORY ─────────────────────────────────────────────────────────────────
+let history = JSON.parse(localStorage.getItem('np_history') || '[]');
+
+function saveHistory(name, role, dob, reportData) {
+  history.unshift({ name, role, dob, ts: Date.now(), data: reportData });
+  if (history.length > 10) history = history.slice(0, 10);
+  localStorage.setItem('np_history', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  const section = document.getElementById('history-section');
+  if (!history.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = history.map((h, i) => `
+    <div class="history-item" onclick="loadHistoryItem(${i})">
+      <div class="hi-name">${h.name}</div>
+      <div class="hi-role">${h.role}</div>
+      <div class="hi-date">${new Date(h.ts).toLocaleDateString('en-GB')}</div>
+    </div>`).join('');
+}
+
+function loadHistoryItem(i) {
+  const h = history[i];
+  document.getElementById('content-area').innerHTML = renderReport(h.data, `${h.name} — ${h.role}`);
+}
+
+renderHistory();
+
+// ─── MAIN GENERATE FUNCTION ──────────────────────────────────────────────────
+async function generateReport() {
+  const name = document.getElementById('f-name').value.trim();
+  const dob = document.getElementById('f-dob').value;
+  const time = document.getElementById('f-time').value;
+  const gender = document.querySelector('input[name="gender"]:checked')?.value;
+  const role = document.getElementById('f-role').value.trim();
+
+  if (!name || !dob || !gender || !role) {
+    alert('Please fill in Name, Date of Birth, Gender, and Role before generating.');
+    return;
+  }
+
+  const btn = document.getElementById('btn-gen');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+
+  const content = document.getElementById('content-area');
+  content.innerHTML = `
+    <div class="loading">
+      <div class="spinner"></div>
+      <div class="loading-label">Generating chronobiological profile…</div>
+      <div class="loading-sub">Computing chart · Analysing disposition · Drafting report</div>
+    </div>`;
+
+  try {
+    const chart = computeChart(dob, time, gender);
+    const prompt = buildPrompt(name, dob, gender, role, chart);
+
+    const res = await fetch('https://naturepath-proxy.onrender.com/api?p=Ditrolic2026', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        system: 'You are a precise professional HR assessment report generator. You respond ONLY with valid JSON matching the exact structure requested. No markdown, no backticks, no preamble, no explanation — raw JSON only.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || `API error ${res.status}`);
+    }
+
+    const apiData = await res.json();
+    const rawText = apiData.content[0].text.trim();
+    const cleanText = rawText.replace(/^```json\s*/,'').replace(/```\s*$/,'').trim();
+    const reportData = JSON.parse(cleanText);
+
+    saveHistory(name, role, dob, reportData);
+    content.innerHTML = renderReport(reportData, `${name} — ${role}`);
+
+  } catch (err) {
+    content.innerHTML = `
+      <div class="error-box">
+        <strong>Assessment generation failed</strong><br>
+        ${err.message}<br><br>
+        <small>Check that your API key is configured and the Anthropic API is reachable. If you are running this file locally, you will need a backend proxy to handle API calls due to browser CORS restrictions — see the deployment notes below.</small>
+      </div>
+      <div class="section" style="margin-top:16px">
+        <h2>Deployment Note</h2>
+        <p style="font-size:13px;color:var(--slate);line-height:1.6">This HTML file calls the Anthropic API directly from the browser. This works when served from the Claude Artifacts environment. For standalone deployment (your own server), you need a small backend proxy:</p>
+        <pre style="background:var(--light);padding:12px;border-radius:8px;font-size:12px;margin-top:10px;overflow-x:auto">Option 1: Deploy to Claude Artifacts (works out of the box)
+Option 2: Add a Node.js/Python proxy that forwards requests to Anthropic and handles CORS
+Option 3: Host on Vercel/Netlify with a serverless function as the proxy</pre>
+      </div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Generate Assessment';
+  }
+}
+</script>
+</body>
+</html>
