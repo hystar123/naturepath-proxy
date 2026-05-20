@@ -1079,6 +1079,11 @@ async function generateReport() {
     }
 
     const apiData = await res.json();
+
+    if (!res.ok || apiData.error || !apiData.content) {
+      throw new Error('API response: ' + JSON.stringify(apiData));
+    }
+
     const rawText = apiData.content[0].text.trim();
     const cleanText = rawText.replace(/^```json\s*/,'').replace(/```\s*$/,'').trim();
     const reportData = JSON.parse(cleanText);
